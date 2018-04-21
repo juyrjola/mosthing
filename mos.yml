@@ -1,0 +1,40 @@
+author: Juha Yrjölä <juha.yrjola@iki.fi>
+description: MongooseOS framework for internet-enabled things
+version: 0.1
+
+libs_version: ${mos.version}
+modules_version: ${mos.version}
+mongoose_os_version: ${mos.version}
+
+# List of files / directories with C sources. No slashes at the end of dir names.
+sources:
+  - src
+  - src/sensors
+
+filesystem:
+  - fs
+
+config_schema:
+  - ["status_led_gpio", "i", -1, {title: "GPIO for status LED"}]
+  - ["net_watchdog", "o", {title: "Net watchdog settings"}]
+  - ["net_watchdog.enable", "b", false, {title: "Watchdog enabled"}]
+  - ["net_watchdog.relay_gpio", "i", -1, {title: "GPIO for turning off the router"}]
+  - ["wifi.ap.enable", false]
+  - ["wifi.sta.enable", false]
+
+# List of libraries used by this app, in order of initialisation
+libs:
+  - origin: https://github.com/mongoose-os-libs/rpc-service-config
+  - origin: https://github.com/mongoose-os-libs/rpc-service-fs
+  - origin: https://github.com/mongoose-os-libs/rpc-uart
+  - origin: https://github.com/mongoose-os-libs/wifi
+  - origin: https://github.com/mongoose-os-libs/sntp
+  - origin: https://github.com/mongoose-os-libs/i2c
+  - origin: https://github.com/mongoose-os-libs/onewire
+  - origin: https://github.com/mongoose-os-libs/dht
+  - origin: https://github.com/mongoose-os-libs/mqtt
+  - origin: https://github.com/mongoose-os-libs/arduino-adafruit-bme280
+    version: master
+
+# Used by the mos tool to catch mos binaries incompatible with this file format
+manifest_version: 2017-05-18
