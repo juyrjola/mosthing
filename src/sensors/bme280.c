@@ -3,7 +3,7 @@
 #include "sensors.h"
 
 
-int bme280_poll(struct sensor_data *sensor, struct sensor_measurement *out)
+int bme280_poll(struct sensor *sensor, struct sensor_measurement *out)
 {
     Adafruit_BME280 *bme = sensor->driver_data;
     int temp = mgos_bme280_read_temperature(bme);
@@ -52,7 +52,7 @@ int bme280_poll(struct sensor_data *sensor, struct sensor_measurement *out)
     return n_values;
 }
 
-int bme280_init(struct sensor_data *sensor)
+int bme280_init(struct sensor *sensor)
 {
     Adafruit_BME280 *bme;
     int ok;

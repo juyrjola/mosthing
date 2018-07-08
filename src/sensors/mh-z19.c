@@ -6,7 +6,7 @@
 
 struct mh_z19_state {
     bool all_good;
-    uint8_t pin;
+    uint8_t gpio;
     uint16_t co2_level;
     double rise_time, fall_time, sample_time;
     uint16_t co2_history[5];
@@ -52,7 +52,7 @@ static void report_co2_level(struct mh_z19_state *state, uint16_t ppm,
 static void mh_z19_int_handler(int pin, void *arg)
 {
     struct mh_z19_state *state = (struct mh_z19_state *) arg;
-    int is_high = mgos_gpio_read(state->pin);
+    int is_high = mgos_gpio_read(state->gpio);
     double now;
     unsigned int diff_rise, diff_fall;
 
@@ -81,7 +81,7 @@ static void mh_z19_int_handler(int pin, void *arg)
     (void) pin;
 }
 
-int mh_z19_poll(struct sensor_data *sensor, struct sensor_measurement *out)
+int mh_z19_poll(struct sensor *sensor, struct sensor_measurement *out)
 {
     struct mh_z19_state *state = (struct mh_z19_state *) sensor->driver_data;
     double now;
@@ -101,10 +101,10 @@ int mh_z19_poll(struct sensor_data *sensor, struct sensor_measurement *out)
 }
 
 
-int mh_z19_init(struct sensor_data *sensor)
+int mh_z19_init(struct sensor *sensor)
 {
     struct mh_z19_state *state;
-    int pin = sensor->pin;
+    int pin = sensor->gpio;
 
     LOG(LL_INFO, ("Initializing MH-Z19 sensor (PWM mode on pin %d)", pin));
     if (pin < 0) {
@@ -114,7 +114,7 @@ int mh_z19_init(struct sensor_data *sensor)
 
     state = malloc(sizeof(*state));
     memset(state, 0, sizeof(*state));
-    state->pin = pin;
+    state->gpio = pin;
     sensor->driver_data = (void *) state;
 
     mgos_gpio_set_mode(pin, MGOS_GPIO_MODE_INPUT);

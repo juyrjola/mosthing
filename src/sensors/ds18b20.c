@@ -81,12 +81,12 @@ static int ds18b20_read_temperature(int pin, int res, float *temperature)
     return 0;
 }
 
-int ds18b20_poll(struct sensor_data *sensor, struct sensor_measurement *out)
+int ds18b20_poll(struct sensor *sensor, struct sensor_measurement *out)
 {
     float temp;
     int ret;
 
-    ret = ds18b20_read_temperature(sensor->pin, 12, &temp);
+    ret = ds18b20_read_temperature(sensor->gpio, 12, &temp);
     if (ret < 0)
         return -1;
 
@@ -102,11 +102,11 @@ int ds18b20_poll(struct sensor_data *sensor, struct sensor_measurement *out)
     return 1;
 }
 
-int ds18b20_init(struct sensor_data *sensor)
+int ds18b20_init(struct sensor *sensor)
 {
     struct sensor_measurement out;
 
-    LOG(LL_INFO, ("Initializing DS18B20 sensor (GPIO %d, power GPIO %d)", sensor->pin,
+    LOG(LL_INFO, ("Initializing DS18B20 sensor (GPIO %d, power GPIO %d)", sensor->gpio,
                   sensor->power_gpio));
     if (sensor->power_gpio > 0) {
         mgos_gpio_set_mode(sensor->power_gpio, MGOS_GPIO_MODE_OUTPUT);

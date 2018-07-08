@@ -31,14 +31,12 @@ if False:
 
     print(yaml.dump(conf_data, indent=4, default_flow_style=False, Dumper=yamlordereddictloader.Dumper))
 
-sensor_conf = conf_data.pop('sensors', None)
-if sensor_conf:
-    with open(os.path.join(FS_PATH, 'sensors.json'), 'w') as f:
-        json.dump(sensor_conf, f, indent=4)
-act_conf = conf_data.pop('actuators', None)
-if act_conf:
-    with open(os.path.join(FS_PATH, 'actuators.json'), 'w') as f:
-        json.dump(act_conf, f, indent=4)
+sensor_conf = conf_data.pop('sensors', [])
+with open(os.path.join(FS_PATH, 'sensors.json'), 'w') as f:
+    json.dump(sensor_conf, f, indent=4)
+act_conf = conf_data.pop('actuators', [])
+with open(os.path.join(FS_PATH, 'actuators.json'), 'w') as f:
+    json.dump(act_conf, f, indent=4)
 
 with open(os.path.join(FS_PATH, 'conf1.json'), 'w') as f:
     json.dump(conf_data, f, indent=4)

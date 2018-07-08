@@ -2,7 +2,7 @@
 #include "mgos_dht.h"
 #include "sensors.h"
 
-int dht_poll(struct sensor_data *sensor, struct sensor_measurement *out)
+int dht_poll(struct sensor *sensor, struct sensor_measurement *out)
 {
     struct mgos_dht *dht = (struct mgos_dht *) sensor->driver_data;
     float temp, humidity;
@@ -34,14 +34,14 @@ int dht_poll(struct sensor_data *sensor, struct sensor_measurement *out)
     return n_values;
 }
 
-int dht_init(struct sensor_data *sensor)
+int dht_init(struct sensor *sensor)
 {
     struct mgos_dht *dht;
     struct sensor_measurement data[2];
     int ret, i;
 
-    LOG(LL_INFO, ("Initializing DHT sensor on GPIO %d", sensor->pin));
-    dht = mgos_dht_create(sensor->pin, DHT22);
+    LOG(LL_INFO, ("Initializing DHT sensor on GPIO %d", sensor->gpio));
+    dht = mgos_dht_create(sensor->gpio, DHT22);
     if (dht == NULL) {
         LOG(LL_ERROR, ("DHT not detected"));
         return -1;
