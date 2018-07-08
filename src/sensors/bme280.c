@@ -10,33 +10,37 @@ int bme280_poll(struct sensor_data *sensor, struct sensor_measurement *out)
     int humidity = mgos_bme280_read_humidity(bme);
     int pres = mgos_bme280_read_pressure(bme);
     int n_values = 0;
+    float val;
 
-    if (temp != MGOS_BME280_RES_FAIL && temp >= -100 && temp < 200) {
+    val = temp / 100.0;
+    if (temp != MGOS_BME280_RES_FAIL && val >= -100 && val < 200) {
         out->property_name = "temperature";
         out->unit = "C";
         out->type = SENSOR_FLOAT;
-        out->float_val = temp / 100.0;
+        out->float_val = val;
         n_values++;
         out++;
     } else
         LOG(LL_ERROR, ("Temperature read failed"));
 
+    val = humidity / 100.0;
     // Check that humidity values are sane
-    if (humidity != MGOS_BME280_RES_FAIL && humidity < 200 && humidity >= 0) {
+    if (humidity != MGOS_BME280_RES_FAIL && val < 200 && val >= 0) {
         out->property_name = "humidity";
         out->unit = "%";
         out->type = SENSOR_FLOAT;
-        out->float_val = humidity / 100.0;
+        out->float_val = val;
         n_values++;
         out++;
     } else
         LOG(LL_ERROR, ("Humidity read failed"));
 
-    if (pres != MGOS_BME280_RES_FAIL && pres > 200 && pres < 2000) {
+    val = pres / 10000.0;
+    if (pres != MGOS_BME280_RES_FAIL && val > 200 && val < 2000) {
         out->property_name = "pressure";
         out->unit = "hPa";
         out->type = SENSOR_FLOAT;
-        out->float_val = pres / 10000.0;
+        out->float_val = val;
         n_values++;
         out++;
     } else

@@ -1,5 +1,8 @@
-#ifndef SENSORS_H
-#define SENSORS_H
+#ifndef __SENSORS_H
+#define __SENSORS_H
+
+#include <stdint.h>
+#include "rfreport.h"
 
 enum value_type {
     SENSOR_INT,
@@ -10,14 +13,18 @@ enum value_type {
 struct sensor_data {
     // Common config
     char type[16];
-    char *mqtt_topic;
+    char *mqtt_topic;       // Which MQTT topic to use to report this sensor
+    uint16_t rh_sensor_id;  // Which RadioHead sensor ID corresponds to this sensor
     int poll_delay;
 
     // Driver specific config
     int pin;
+    int power_gpio;
+    int (*poll)(struct sensor *, int);
 
     // Internal state
-    bool enabled;
+    int enabled:1;
+    unsigned int *timer_id;
     void *driver_data;
     struct sensor_data *next;
 };
@@ -32,13 +39,17 @@ struct sensor_measurement {
     char *char_val;
 };
 
-extern void sensors_init(void);
+void sensors_init(void);
+void sensors_handle_rf_report(const struct rf_sensor_report *report);
+void sensors_shutdown(void);
 
-extern int bme280_init(struct sensor_data *sensor);
-extern int bme280_poll(struct sensor_data *sensor, struct sensor_measurement *out);
-extern int dht_init(struct sensor_data *sensor);
-extern int dht_poll(struct sensor_data *sensor, struct sensor_measurement *out);
-extern int ds18b20_init(struct sensor_data *sensor);
-extern int ds18b20_poll(struct sensor_data *sensor, struct sensor_measurement *out);
+int bme280_init(struct sensor_data *sensor);
+int bme280_poll(struct sensor_data *sensor, struct sensor_measurement *out);
+int dht_init(struct sensor_data *sensor);
+int dht_poll(struct sensor_data *sensor, struct sensor_measurement *out);
+int ds18b20_init(struct sensor_data *sensor);
+int ds18b20_poll(struct sensor_data *sensor, struct sensor_measurement *out);
+int mh_z19_init(struct sensor_data *sensor);
+int mh_z19_poll(struct sensor_data *sensor, struct sensor_measurement *out);
 
 #endif

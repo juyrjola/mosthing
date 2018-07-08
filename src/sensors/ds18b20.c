@@ -34,7 +34,7 @@ static int ds18b20_read_temperature(int pin, int res, float *temperature)
         if (rom[0] != 0x28)
             continue; // Skip devices that are not DS18B20's
         if (found) {
-            LOG(LL_ERROR, ("OneWire bus has more than onw DS18B20 sensor. This is unsupported."));
+            LOG(LL_ERROR, ("OneWire bus has more than one DS18B20 sensor. This is unsupported."));
             break;
         }
         // Only use the first found DS18B20 for now.
@@ -90,15 +90,15 @@ int ds18b20_poll(struct sensor_data *sensor, struct sensor_measurement *out)
     if (ret < 0)
         return -1;
 
-    if (!(temp > -60) || !(temp < 160)) {
+    if (temp > -60 && temp < 160) {
         out->property_name = "temperature";
         out->unit = "C";
         out->type = SENSOR_FLOAT;
         out->float_val = temp;
-    } else
+    } else {
         LOG(LL_ERROR, ("Invalid temperature value: %f", temp));
         return -1;
-
+    }
     return 1;
 }
 
@@ -106,7 +106,12 @@ int ds18b20_init(struct sensor_data *sensor)
 {
     struct sensor_measurement out;
 
-    LOG(LL_INFO, ("Initializing DS18B20 sensor"));
+    LOG(LL_INFO, ("Initializing DS18B20 sensor (GPIO %d, power GPIO %d)", sensor->pin,
+                  sensor->power_gpio));
+    if (sensor->power_gpio > 0) {
+        mgos_gpio_set_mode(sensor->power_gpio, MGOS_GPIO_MODE_OUTPUT);
+        mgos_gpio_write(sensor->power_gpio, 1);
+    }
     if (ds18b20_poll(sensor, &out) < 0)
         return -1;
     LOG(LL_INFO, ("DS18B20 initialized"));

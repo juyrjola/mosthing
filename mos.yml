@@ -10,6 +10,8 @@ mongoose_os_version: ${mos.version}
 sources:
   - src
   - src/sensors
+  - src/actuators
+  - lib/radiohead
 
 filesystem:
   - fs
@@ -19,6 +21,16 @@ config_schema:
   - ["net_watchdog", "o", {title: "Net watchdog settings"}]
   - ["net_watchdog.enable", "b", false, {title: "Watchdog enabled"}]
   - ["net_watchdog.relay_gpio", "i", -1, {title: "GPIO for turning off the router"}]
+  - ["radiohead", "o", {title: "Radiohead RF network settings"}]
+  - ["radiohead.enable", "b", false, {title: "Radiohead RF network enabled"}]
+  - ["radiohead.address", "i", -1, {title: "Own address"}]
+  - ["radiohead.channel", "i", 4, {title: "RF channel to use"}]
+  - ["radiohead.device", "o", {title: "RF device settings"}]
+  - ["radiohead.device.type", "s", "nrf24", {title: "Device type (only nrf24 currently supported)"}]
+  - ["radiohead.device.ce_gpio", "i", -1, {title: "Chip enable GPIO"}]
+  - ["radiohead.device.ss_gpio", "i", -1, {title: "Slave select GPIO"}]
+  - ["radiohead.device.irq_gpio", "i", -1, {title: "IRQ GPIO"}]
+  - ["radiohead.sensor_report_address", "i", -1, {title: "Where to send sensor reports"}]
   - ["wifi.ap.enable", false]
   - ["wifi.sta.enable", false]
 
@@ -34,7 +46,14 @@ libs:
   - origin: https://github.com/mongoose-os-libs/dht
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/arduino-adafruit-bme280
+  - origin: https://github.com/mongoose-os-libs/arduino-adafruit-ssd1306
     version: master
+
+cflags:
+  - "-Wno-error"
+
+cxxflags:
+  - "-Wno-error"
 
 # Used by the mos tool to catch mos binaries incompatible with this file format
 manifest_version: 2017-05-18
