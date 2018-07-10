@@ -190,9 +190,9 @@ static void init_sensor(struct sensor *sensor)
         p += sprintf(p, "\tMQTT topic: %s\n", sensor->mqtt_topic);
     if (sensor->poll_delay)
         p += sprintf(p, "\tPoll delay: %u ms\n", sensor->poll_delay);
-    if (sensor->gpio)
+    if (sensor->gpio >= 0)
         p += sprintf(p, "\tPin: %d\n", sensor->gpio);
-    if (sensor->power_gpio)
+    if (sensor->power_gpio >= 0)
         p += sprintf(p, "\tPower GPIO: %d\n", sensor->power_gpio);
 
     LOG(LL_INFO, ("%s", logbuf));
@@ -256,7 +256,6 @@ void sensors_init(void)
         LOG(LL_ERROR, ("No sensor configuration file found"));
         return;
     }
-    printf("%s", buf);
     ret = json_walk(buf, size, sensor_config_cb, NULL);
     free(buf);
     if (ret <= 0) {
