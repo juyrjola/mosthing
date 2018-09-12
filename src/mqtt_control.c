@@ -9,7 +9,7 @@
 #define MAX_BUFFER_LINES        64
 #define MQTT_LOG_SEND_DELAY     1000
 
-#define UART_DEBUG
+#undef UART_DEBUG
 
 
 #ifdef ESP32
@@ -262,8 +262,11 @@ static void mqtt_control_handler(struct mg_connection *nc, int ev,
         LOG(LL_ERROR, ("Malformed control input"));
         return;
     }
-    if (strcmp(command, "reboot") == 0)
+    LOG(LL_INFO, ("Received command '%s'", command));
+    if (strcmp(command, "reboot") == 0) {
+        LOG(LL_WARN, ("Rebooting"));
         mgos_system_restart_after(100);
+    }
 
     free(command);
 }
