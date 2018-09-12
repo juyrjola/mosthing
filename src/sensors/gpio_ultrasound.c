@@ -2,7 +2,7 @@
 #include <math.h>
 #include <mgos.h>
 
-#define N_MEASUREMENTS 5
+#define N_MEASUREMENTS 10
 #define MEASUREMENT_TOLERANCE 5  /* in percents */
 
 struct gpio_ultrasound_state {
@@ -106,7 +106,7 @@ static void finish_measurement(void *arg)
     struct gpio_ultrasound_state *state = (struct gpio_ultrasound_state *) sensor->driver_data;
     struct sensor_measurement out;
     double valid_measurements[N_MEASUREMENTS], median, mean;
-    char buf[50], *s = buf;
+    char buf[100], *s = buf;
     int i, n_invalid = 0, n_valid = 0;;
 
     if (state->n_measurements < N_MEASUREMENTS) {
