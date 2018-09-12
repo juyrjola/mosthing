@@ -58,5 +58,7 @@ int mh_z19_init(struct sensor *sensor);
 int mh_z19_poll(struct sensor *sensor, struct sensor_measurement *out);
 int gpio_ultrasound_init(struct sensor *sensor);
 int gpio_ultrasound_poll(struct sensor *sensor, struct sensor_measurement *out);
+int soil_moisture_init(struct sensor *sensor);
+int soil_moisture_poll(struct sensor *sensor, struct sensor_measurement *out);
 
 #endif

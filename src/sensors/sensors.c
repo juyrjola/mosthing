@@ -217,6 +217,10 @@ static void init_sensor(struct sensor *sensor)
         if (gpio_ultrasound_init(sensor) < 0)
             return;
         sensor->poll = gpio_ultrasound_poll;
+    } else if (strcmp(sensor->type, "soil_moisture") == 0) {
+        if (soil_moisture_init(sensor) < 0)
+            return;
+        sensor->poll = soil_moisture_poll;
     } else {
         LOG(LL_ERROR, ("Invalid sensor type (%s)", sensor->type));
         return;
